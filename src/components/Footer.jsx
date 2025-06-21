@@ -10,6 +10,7 @@ import {
   FaPaperPlane,
   FaMapMarkerAlt,
   FaPhone,
+  FaFacebook,
 } from "react-icons/fa";
 import ThemeContext from "../context/ThemeContext";
 
@@ -38,14 +39,26 @@ const Footer = () => {
             design.
           </p>
           <div className="flex space-x-4 mt-2">
-            <a href="#" className="hover:scale-110 transition">
+            <a
+              href="https://github.com/lihasahil"
+              className="hover:scale-110 transition"
+              target="_blank"
+            >
               <FaGithub className="text-xl hover:text-blue-500" />
             </a>
-            <a href="#" className="hover:scale-110 transition">
+            <a
+              href="https://www.linkedin.com/in/sahil-shrestha-b46887319/"
+              target="_blank"
+              className="hover:scale-110 transition"
+            >
               <FaLinkedinIn className="text-xl hover:text-blue-500" />
             </a>
-            <a href="#" className="hover:scale-110 transition">
-              <FaTwitter className="text-xl hover:text-blue-500" />
+            <a
+              href="https://www.facebook.com/sahil.shrestha.677985/"
+              target="_blank"
+              className="hover:scale-110 transition"
+            >
+              <FaFacebook className="text-xl hover:text-blue-500" />
             </a>
           </div>
         </div>

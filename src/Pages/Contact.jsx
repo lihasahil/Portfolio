@@ -1,23 +1,43 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaPaperPlane } from "react-icons/fa";
 import ThemeContext from "../context/ThemeContext";
+import emailjs from "@emailjs/browser"; // ✅ Import EmailJS
 
 const Contact = () => {
   const { theme } = useContext(ThemeContext);
   const isDark = theme === "dark";
 
+  const formRef = useRef(); // ✅ Ref for the form element
+
+  const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    toast.success("Message sent successfully!");
-    setName("");
-    setEmail("");
-    setMessage("");
+    setLoading(true);
+
+    try {
+      await emailjs.sendForm(
+        import.meta.env.VITE_APP_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_APP_EMAILJS_TEMPLATE_ID,
+        formRef.current,
+        import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY
+      );
+
+      toast.success("Message sent successfully!");
+      setName("");
+      setEmail("");
+      setMessage("");
+    } catch (error) {
+      console.error("EmailJS Error:", error);
+      toast.error("Failed to send message. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -49,7 +69,7 @@ const Contact = () => {
           We would love to hear from you!
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label
               className={`block text-sm font-medium mb-1 ${
@@ -60,6 +80,7 @@ const Contact = () => {
             </label>
             <input
               type="text"
+              name="user_name" // ✅ Name attribute for EmailJS
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -82,6 +103,7 @@ const Contact = () => {
             </label>
             <input
               type="email"
+              name="user_email" // ✅ Name attribute for EmailJS
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -103,6 +125,7 @@ const Contact = () => {
               Message
             </label>
             <textarea
+              name="message" // ✅ Name attribute for EmailJS
               required
               rows={4}
               value={message}
@@ -118,9 +141,11 @@ const Contact = () => {
 
           <button
             type="submit"
-            className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200"
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200 disabled:opacity-50"
           >
-            <FaPaperPlane /> Send Message
+            <FaPaperPlane />
+            {loading ? "Sending..." : "Send Message"}
           </button>
         </form>
       </div>
